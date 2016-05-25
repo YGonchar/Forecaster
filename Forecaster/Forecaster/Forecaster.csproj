@@ -38,13 +38,24 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Contracts\IStatelessViewModel.cs" />
+    <Compile Include="Converters\GeoCoordsConverter.cs" />
+    <Compile Include="Utils\WindDirection.cs" />
     <Compile Include="Models\City.cs" />
     <Compile Include="Models\GeoCoords.cs" />
+    <Compile Include="Converters\IconConverter.cs" />
     <Compile Include="Models\Weather.cs" />
     <Compile Include="Models\Wind.cs" />
+    <Compile Include="Converters\WindConverter.cs" />
     <Compile Include="MvvmUtils\ObservableProperty.cs" />
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Resources\RestApiConstants.cs" />
+    <Compile Include="Utils\DateTimeHelper.cs" />
     <Compile Include="Services\RestClient.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\MainPage.xaml.cs">
@@ -52,6 +63,10 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\WeatherInfo.cs" />
+    <Compile Include="Views\WeatherInfo.xaml.cs">
+      <DependentUpon>WeatherInfo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\WeatherInfoViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -98,6 +113,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\MainPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
       <SubType>Designer</SubType>
@@ -105,6 +124,12 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="App.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\WeatherInfo.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
       <SubType>Designer</SubType>
     </EmbeddedResource>

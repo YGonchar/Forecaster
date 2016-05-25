@@ -14,10 +14,10 @@ namespace Forecaster.MvvmUtils
     public class ObservableObject<T> : INotifyPropertyChanged
     {
         private readonly object _lock = new object();
-        private T _data;
-        private bool _isDelaying;
         private Action<T> _callback;
+        private T _data;
         private TimeSpan _delayTime;
+        private bool _isDelaying;
 
         private ObservableObject(T intitState)
         {
@@ -25,6 +25,22 @@ namespace Forecaster.MvvmUtils
             _callback = unused => { };
             _delayTime = TimeSpan.Zero;
         }
+
+        /// <summary>
+        ///     The data property to bind.
+        /// </summary>
+        public T Data
+        {
+            get { return _data; }
+            set
+            {
+                if (Equals(_data, value))
+                    return;
+                SetPropertyAndRise(ref _data, value);
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         ///     Creates a new empty instance.
@@ -43,20 +59,6 @@ namespace Forecaster.MvvmUtils
         public static ObservableObject<T> Create(T initialState)
         {
             return new ObservableObject<T>(initialState);
-        }
-
-        /// <summary>
-        ///     The data property to bind.
-        /// </summary>
-        public T Data
-        {
-            get { return _data; }
-            set
-            {
-                if (Equals(_data, value))
-                    return;
-                SetPropertyAndRise(ref _data, value);
-            }
         }
 
         /// <summary>
@@ -81,7 +83,7 @@ namespace Forecaster.MvvmUtils
             return this;
         }
 
-        private void SetPropertyAndRise(ref T data, T value, [CallerMemberName]string propertyName = null)
+        private void SetPropertyAndRise(ref T data, T value, [CallerMemberName] string propertyName = null)
         {
             if (Equals(data, value))
                 return;
@@ -97,10 +99,7 @@ namespace Forecaster.MvvmUtils
                     {
                         Task.Delay(_delayTime).Wait();
                         _callback?.Invoke(_data);
-                        Device.BeginInvokeOnMainThread(() =>
-                        {
-                            OnPropertyChanged(propertyName);
-                        });
+                        Device.BeginInvokeOnMainThread(() => { OnPropertyChanged(propertyName); });
                         _isDelaying = false;
                     });
                 }
@@ -111,7 +110,5 @@ namespace Forecaster.MvvmUtils
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

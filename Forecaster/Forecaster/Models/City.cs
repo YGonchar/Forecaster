@@ -1,6 +1,6 @@
 ﻿namespace Forecaster.Models
 {
-    public struct City
+    public class City
     {
         public string Country { get; set; }
         public string Name { get; set; }

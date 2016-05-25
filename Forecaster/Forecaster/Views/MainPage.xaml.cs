@@ -1,5 +1,4 @@
-﻿using Xamarin.Forms;
-using XLabs.Forms.Mvvm;
+﻿using XLabs.Forms.Mvvm;
 
 namespace Forecaster.Views
 {

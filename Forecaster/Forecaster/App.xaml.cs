@@ -1,7 +1,6 @@
-﻿using Forecaster.ViewModels;
+﻿using Forecaster.Services;
 using Forecaster.Views;
 using Xamarin.Forms;
-using XLabs.Forms.Mvvm;
 using XLabs.Ioc;
 
 namespace Forecaster
@@ -12,6 +11,7 @@ namespace Forecaster
         {
             InitializeComponent();
         }
+
         protected override void OnStart()
         {
             ConfigureIoC();
@@ -24,6 +24,14 @@ namespace Forecaster
             Resolver.SetResolver(container.GetResolver());
 
             container.Register<MainPage>(typeof(MainPage));
+            container.Register(resolver =>
+            {
+#if !DEBUG
+                return new RestClientMock();
+#else
+                return DependencyService.Get<RestClient>();
+#endif
+            });
         }
     }
 }

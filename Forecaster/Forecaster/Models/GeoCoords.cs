@@ -2,7 +2,7 @@ namespace Forecaster.Models
 {
     public struct GeoCoords
     {
-        public int Latt { get; set; }
-        public int Long { get; set; }
+        public double Latt { get; set; }
+        public double Lon { get; set; }
     }
 }
