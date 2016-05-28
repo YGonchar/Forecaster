@@ -19,11 +19,11 @@ namespace Forecaster.Converters
                 new WindDirection("North", iDeg => iDeg > 350 && iDeg < 10),
                 new WindDirection("North-East", iDeg => iDeg > 10 && iDeg < 80),
                 new WindDirection("East", iDeg => iDeg > 80 && iDeg < 100),
-                new WindDirection("East-South", iDeg => iDeg > 100 && iDeg < 170),
+                new WindDirection("South-East", iDeg => iDeg > 100 && iDeg < 170),
                 new WindDirection("South", iDeg => iDeg > 170 && iDeg < 190),
                 new WindDirection("South-West", iDeg => iDeg > 190 && iDeg < 260),
                 new WindDirection("West", iDeg => iDeg > 260 && iDeg < 280),
-                new WindDirection("West-North", iDeg => iDeg > 280 && iDeg < 350)
+                new WindDirection("North-West", iDeg => iDeg > 280 && iDeg < 350)
             };
         }
 

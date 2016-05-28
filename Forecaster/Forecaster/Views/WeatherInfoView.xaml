@@ -1,8 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentView x:Class="Forecaster.Views.WeatherInfo"
+<ContentView x:Class="Forecaster.Views.WeatherInfoView"
              xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:converters="clr-namespace:Forecaster.Converters;assembly=Forecaster"
              x:Name="Parent">
     <ContentView.Resources>
         <ResourceDictionary>
@@ -22,32 +21,23 @@
             </Style>
         </ResourceDictionary>
     </ContentView.Resources>
-    <StackLayout>
+    <StackLayout IsVisible="{Binding Source={x:Reference Parent}, Path=BindingContext, Mode=OneWay, Converter={StaticResource ValueToBoolConverter}}">
         <StackLayout Orientation="Horizontal">
             <Label FontSize="{StaticResource LargeFont}"
                    HorizontalOptions="Start"
-                   Text="{Binding Model.City.Name,
+                   Text="{Binding City.Name,
                                   StringFormat='{0}, '}" />
             <Label FontSize="{StaticResource LargeFont}"
                    HorizontalOptions="Start"
-                   Text="{Binding Model.City.Country}" />
+                   Text="{Binding City.Country}" />
         </StackLayout>
 
         <StackLayout Orientation="Horizontal" Padding="10">
-            <Image>
-                <Image.Source>
-                    <Binding Path="Model.Weather.Icon">
-                        <Binding.Converter>
-                            <converters:IconConverter />
-                        </Binding.Converter>
-                    </Binding>
-                </Image.Source>
-            </Image>
-            <Label FontSize="{StaticResource LargeFont}" Text="{Binding Model.Temperature, StringFormat='{0:F} °C'}" />
-
+            <Image Source="{Binding Weather.Icon, Converter={StaticResource IconConverter}}" />
+            <Label FontSize="{StaticResource LargeFont}" Text="{Binding Temperature, StringFormat='{0:F} °C'}" />
         </StackLayout>
-        <Label HorizontalOptions="FillAndExpand" Text="{Binding Model.Weather.Main}" />
-        <Label HorizontalOptions="FillAndExpand" Text="{Binding Model.Time, StringFormat='get at {0:yyyy.MM.dd H:mm}'}" />
+        <Label HorizontalOptions="FillAndExpand" Text="{Binding Weather.Main}" />
+        <Label HorizontalOptions="FillAndExpand" Text="{Binding Time, StringFormat='get at {0:yyyy.MM.dd H:mm}'}" />
         <Grid BackgroundColor="Gray"
               ColumnSpacing="1"
               Padding="1"
@@ -68,63 +58,52 @@
             <Label Grid.Row="0"
                    Grid.Column="0"
                    Text="Wind" />
-            <Label Grid.Row="0" Grid.Column="1">
-                <Label.Text>
-                    <Binding Path="Model.Wind">
-                        <Binding.Converter>
-                            <converters:WindConverter />
-                        </Binding.Converter>
-                    </Binding>
-                </Label.Text>
-            </Label>
+            <Label Grid.Row="0"
+                   Grid.Column="1"
+                   Text="{Binding Wind,
+                                  Converter={StaticResource WindConverter}}" />
             <Label Grid.Row="1"
                    Grid.Column="0"
                    Text="Cloudiness" />
             <Label Grid.Row="1"
                    Grid.Column="1"
-                   Text="{Binding Model.Weather.Description}" />
+                   Text="{Binding Weather.Description}" />
             <Label Grid.Row="2"
                    Grid.Column="0"
                    Text="Pressure" />
             <Label Grid.Row="2"
                    Grid.Column="1"
-                   Text="{Binding Model.Pressure,
+                   Text="{Binding Pressure,
                                   StringFormat='{0:F} hpa'}" />
             <Label Grid.Row="3"
                    Grid.Column="0"
                    Text="Humidity" />
             <Label Grid.Row="3"
                    Grid.Column="1"
-                   Text="{Binding Model.Humidity,
+                   Text="{Binding Humidity,
                                   StringFormat='{0} %'}" />
             <Label Grid.Row="4"
                    Grid.Column="0"
                    Text="Sunrise" />
             <Label Grid.Row="4"
                    Grid.Column="1"
-                   Text="{Binding Model.Sunrise,
+                   Text="{Binding Sunrise,
                                   StringFormat='{0:H:mm}'}" />
             <Label Grid.Row="5"
                    Grid.Column="0"
                    Text="Sunset" />
             <Label Grid.Row="5"
                    Grid.Column="1"
-                   Text="{Binding Model.Sunset,
+                   Text="{Binding Sunset,
                                   StringFormat='{0:H:mm}'}" />
             <Label Grid.Row="6"
                    Grid.Column="0"
                    Text="Geo coords" />
             <Label Grid.Row="6"
                    Grid.Column="1"
-                   TextColor="#E47023">
-                <Label.Text>
-                    <Binding Path="Model.GeoCoords">
-                        <Binding.Converter>
-                            <converters:GeoCoordsConverter />
-                        </Binding.Converter>
-                    </Binding>
-                </Label.Text>
-            </Label>
+                   Text="{Binding GeoCoords,
+                                  Converter={StaticResource GeoCoordsConverter}}"
+                   TextColor="#E47023" />
         </Grid>
     </StackLayout>
 

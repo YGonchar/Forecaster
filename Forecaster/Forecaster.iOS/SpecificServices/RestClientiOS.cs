@@ -69,6 +69,11 @@ namespace Forecaster.iOS.SpecificServices
             return await tcs.Task;
         }
 
+        public override Task<WeatherInfo> GetWeatherByCityIdAsync(int cityId)
+        {
+            return GetWeatherByCityAsync(new City {Id = cityId});
+        }
+
         public override async Task<byte[]> LoadIconAsync(string iconId)
         {
             var tcs = new TaskCompletionSource<byte[]>(TaskCreationOptions.AttachedToParent);

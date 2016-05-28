@@ -2,9 +2,9 @@
 
 namespace Forecaster.Views
 {
-    public partial class MainPage : TabbedPage
+    public partial class WeatherInfoView : ContentView
     {
-        public MainPage()
+        public WeatherInfoView()
         {
             InitializeComponent();
         }

@@ -29,7 +29,7 @@ namespace Forecaster.Droid.SpecificServices
             RestRequest request = new RestRequest(string.Format(RestApiConstants.FindManyCities, cityName, AppId));
             request.AddQueryParameter(RestApiConstants.UnitsParam, UnitsType);
             request.RequestFormat = DataFormat.Json;
-            var response = await _client.ExecuteTaskAsync(request);
+            var response = _client.Execute(request);
 
             try
             {
@@ -66,6 +66,11 @@ namespace Forecaster.Droid.SpecificServices
                 tcs.SetException(exc);
             }
             return await tcs.Task;
+        }
+
+        public override Task<WeatherInfo> GetWeatherByCityIdAsync(int cityId)
+        {
+            return GetWeatherByCityAsync(new City {Id = cityId});
         }
 
         public override async Task<byte[]> LoadIconAsync(string iconId)

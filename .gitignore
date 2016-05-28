@@ -243,3 +243,11 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+/Forecaster/Forecaster/Behaviors
+/Forecaster/Forecaster/Models/JsonModels
+/Forecaster/Forecaster/Services/RestClientMock.cs
+/Forecaster/Forecaster/Services/WeatherInfoModelConverter.cs
+/Forecaster/Forecaster/Views/EditFavoritesPage.xaml
+/Forecaster/Forecaster/Views/EditFavoritesPage.xaml.cs
+/Forecaster/Forecaster.iOS/SQLite.cs
+/Forecaster/Forecaster.iOS/SQLiteAsync.cs

@@ -15,7 +15,7 @@ namespace Forecaster
         protected override void OnStart()
         {
             ConfigureIoC();
-            MainPage = Resolver.Resolve<MainPage>();
+            MainPage = new NavigationPage(new MainPage());
         }
 
         private void ConfigureIoC()
@@ -23,8 +23,7 @@ namespace Forecaster
             IDependencyContainer container = new SimpleContainer();
             Resolver.SetResolver(container.GetResolver());
 
-            container.Register<MainPage>(typeof(MainPage));
-            container.Register(resolver =>
+            container.Register<RestClient>(resolver =>
             {
 #if !DEBUG
                 return new RestClientMock();

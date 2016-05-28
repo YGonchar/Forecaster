@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Forecaster.Models;
 using Forecaster.Resources;
@@ -41,6 +39,13 @@ namespace Forecaster.Services
         public abstract Task<WeatherInfo> GetWeatherByCityAsync(City city);
 
         /// <summary>
+        ///     Load weather information about specific city.
+        /// </summary>
+        /// <param name="cityId">An id of requested city</param>
+        /// <returns>Full weather information for the city.</returns>
+        public abstract Task<WeatherInfo> GetWeatherByCityIdAsync(int cityId);
+
+        /// <summary>
         ///     Load weather icon by its name.
         /// </summary>
         /// <param name="iconId">Icon id from weather information.</param>
@@ -54,16 +59,19 @@ namespace Forecaster.Services
         /// <returns></returns>
         protected IEnumerable<City> ExtractCities(string restResponse)
         {
-            JObject jObject = JObject.Parse(restResponse, new JsonLoadSettings
-            {CommentHandling = CommentHandling.Ignore, LineInfoHandling = LineInfoHandling.Ignore});
-            return jObject["list"].Children()
-                .Select(token => new City
+            JObject jObject = JObject.Parse(restResponse);
+            if (jObject.Value<int>("code") == 404)
+                yield break;
+
+            foreach (JToken token in jObject["list"])
+            {
+                yield return new City
                 {
                     Name = token.Value<string>("name"),
                     Id = token.Value<int>("id"),
                     Country = token["sys"].Value<string>("country")
-                }
-                ).AsEnumerable();
+                };
+            }
         }
 
         /// <summary>
@@ -74,6 +82,9 @@ namespace Forecaster.Services
         protected WeatherInfo ExtractWeatherInfo(string restResponse)
         {
             JToken infoObject = JObject.Parse(restResponse);
+
+            if (infoObject.Value<int>("code") == 404)
+                return null;
 
             WeatherInfo info = new WeatherInfo
             {
@@ -109,33 +120,6 @@ namespace Forecaster.Services
             };
 
             return info;
-        }
-    }
-
-    /// <summary>
-    ///     A mock type for testing purposes.
-    /// </summary>
-    public class RestClientMock : RestClient
-    {
-        public override Task<IEnumerable<City>> FindCitiesAsync(string cityName)
-        {
-            string response =
-                @"{""message"":""accurate"",""cod"":""200"",""count"":1,""list"":[{""id"":706369,""name"":""Khmelnytskyi raion"",""coord"":{""lon"":26.9743,""lat"":49.4168},""main"":{""temp"":15.76,""temp_min"":15.76,""temp_max"":15.76,""pressure"":982.76,""sea_level"":1018.95,""grnd_level"":982.76,""humidity"":74},""dt"":1464116198,""wind"":{""speed"":4.36,""deg"":80.002},""sys"":{""country"":""Ukraine""},""rain"":{""3h"":0.5075},""clouds"":{""all"":92},""weather"":[{""id"":500,""main"":""Rain"",""description"":""light rain"",""icon"":""10n""}]}]}";
-            return Task.FromResult(ExtractCities(response));
-        }
-
-        public override Task<WeatherInfo> GetWeatherByCityAsync(City city)
-        {
-            string response =
-                @"{""coord"":{""lon"":27,""lat"":49.42},""weather"":[{""id"":804,""main"":""Clouds"",""description"":""overcast clouds"",""icon"":""04d""}],""base"":""cmc stations"",""main"":{""temp"":16.26,""pressure"":982.08,""humidity"":80,""temp_min"":16.26,""temp_max"":16.26,""sea_level"":1018.41,""grnd_level"":982.08},""wind"":{""speed"":4.11,""deg"":93.0033},""clouds"":{""all"":92},""dt"":1464172169,""sys"":{""message"":0.0025,""country"":""UA"",""sunrise"":1464142548,""sunset"":1464199377},""id"":706369,""name"":""Khmelnytskyy"",""cod"":200}";
-            WeatherInfo info = ExtractWeatherInfo(response);
-
-            return Task.FromResult(info);
-        }
-
-        public override Task<byte[]> LoadIconAsync(string iconId)
-        {
-            throw new NotImplementedException();
         }
     }
 }

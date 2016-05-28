@@ -1,34 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<mvvm:BaseView x:Class="Forecaster.Views.MainPage"
-               xmlns="http://xamarin.com/schemas/2014/forms"
-               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-               xmlns:custom="clr-namespace:Forecaster.Views;assembly=Forecaster"
-               xmlns:local="clr-namespace:Forecaster.ViewModels;assembly=Forecaster"
-               xmlns:mvvm="clr-namespace:XLabs.Forms.Mvvm;assembly=XLabs.Forms"
-               xmlns:xlabs="clr-namespace:XLabs.Forms.Controls;assembly=XLabs.Forms">
-    <ContentPage.BindingContext>
-        <local:MainViewModel />
-    </ContentPage.BindingContext>
-    <ContentPage.Padding>
-        <OnPlatform x:TypeArguments="Thickness"
-                    Android="6"
-                    iOS="6,26,6,6" />
-    </ContentPage.Padding>
-    <StackLayout>
-        <StackLayout Orientation="Horizontal" VerticalOptions="Start">
-            <xlabs:ExtendedEntry Margin="0,0,6,0"
-                                 ClassId="lbl"
-                                 HasBorder="True"
-                                 HorizontalOptions="FillAndExpand"
-                                 Placeholder="Type city name"
-                                 Text="{Binding SearchText}" />
-            <Button Command="{Binding SearchCommand}"
-                    CommandParameter="{Binding SearchText}"
-                    HorizontalOptions="End"
-                    Text="Search" />
-        </StackLayout>
-        <StackLayout>
-            <custom:WeatherInfo BindingContext="{Binding InfoViewModel}" />
-        </StackLayout>
-    </StackLayout>
-</mvvm:BaseView>
+<TabbedPage x:Class="Forecaster.Views.MainPage"
+            xmlns="http://xamarin.com/schemas/2014/forms"
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            xmlns:viewModels="clr-namespace:Forecaster.ViewModels;assembly=Forecaster"
+            xmlns:views="clr-namespace:Forecaster.Views;assembly=Forecaster">
+    <views:HomePage Title="Start page">
+        <views:HomePage.BindingContext>
+            <viewModels:HomeViewModel />
+        </views:HomePage.BindingContext>
+    </views:HomePage>
+    <views:FavoritesPage Title="Favorites">
+        <views:FavoritesPage.BindingContext>
+            <viewModels:FavoritesViewModel />
+        </views:FavoritesPage.BindingContext>
+    </views:FavoritesPage>
+
+</TabbedPage>

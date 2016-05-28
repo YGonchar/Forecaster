@@ -1,10 +1,10 @@
-﻿using Xamarin.Forms;
+﻿using XLabs.Forms.Mvvm;
 
 namespace Forecaster.Views
 {
-    public partial class MainPage : TabbedPage
+    public partial class HomePage : BaseView
     {
-        public MainPage()
+        public HomePage()
         {
             InitializeComponent();
         }

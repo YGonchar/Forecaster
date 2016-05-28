@@ -17,5 +17,10 @@ namespace Forecaster.Models
         public DateTime Sunrise { get; set; }
         public DateTime Sunset { get; set; }
         public GeoCoords GeoCoords { get; set; }
+
+        public override string ToString()
+        {
+            return City.ToString();
+        }
     }
 }

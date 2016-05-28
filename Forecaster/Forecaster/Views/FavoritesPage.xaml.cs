@@ -2,11 +2,13 @@
 
 namespace Forecaster.Views
 {
-    public partial class WeatherInfo : ContentView
+    public partial class FavoritesPage : CarouselPage
     {
-        public WeatherInfo()
+        public FavoritesPage()
         {
             InitializeComponent();
         }
     }
+}
+
 }
