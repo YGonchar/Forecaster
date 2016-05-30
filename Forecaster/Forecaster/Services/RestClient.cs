@@ -83,7 +83,7 @@ namespace Forecaster.Services
         {
             JToken infoObject = JObject.Parse(restResponse);
 
-            if (infoObject.Value<int>("code") == 404)
+            if (infoObject.Value<int>("cod") == 404)
                 return null;
 
             WeatherInfo info = new WeatherInfo

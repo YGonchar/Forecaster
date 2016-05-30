@@ -3,6 +3,7 @@ using Android.Content.PM;
 using Android.OS;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
+using XLabs.Platform.Services;
 
 namespace Forecaster.Droid
 {
@@ -13,7 +14,7 @@ namespace Forecaster.Droid
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
-
+            DependencyService.Register<INetwork, Network>();
             Forms.Init(this, bundle);
             LoadApplication(new App());
         }

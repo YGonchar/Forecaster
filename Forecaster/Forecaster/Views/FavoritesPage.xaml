@@ -5,6 +5,13 @@
               xmlns:views="clr-namespace:Forecaster.Views;assembly=Forecaster"
               x:Name="CarouselPage"
               ItemsSource="{Binding Favorites}">
+    <CarouselPage.ToolbarItems>
+        <ToolbarItem Command="{Binding RemoveFromFavorites}"
+                     CommandParameter="{Binding SelectedItem,
+                                                Source={x:Reference CarouselPage}}"
+                     Order="Secondary"
+                     Text="Remove" />
+    </CarouselPage.ToolbarItems>
     <CarouselPage.ItemTemplate>
         <DataTemplate>
             <ContentPage>
@@ -12,5 +19,4 @@
             </ContentPage>
         </DataTemplate>
     </CarouselPage.ItemTemplate>
-    <ContentPage />
 </CarouselPage>

@@ -9,10 +9,11 @@ using Xamarin.Forms;
 using XLabs;
 using XLabs.Forms.Mvvm;
 using XLabs.Ioc;
+using IViewModel = Forecaster.Contracts.IViewModel;
 
 namespace Forecaster.ViewModels
 {
-    public class HomeViewModel : ViewModel
+    public class HomeViewModel : ViewModel, IViewModel
     {
         private List<City> _cities;
         private string _searchText;
@@ -81,10 +82,11 @@ namespace Forecaster.ViewModels
         private void InitState()
         {
             SearchCommand = new RelayCommand<string>(ExecuteSearch, s => !string.IsNullOrWhiteSpace(s));
-            AddToFavoritesCommand = new RelayCommand<WeatherInfo>(Execute, info => { return info != null; });
+            AddToFavoritesCommand = new RelayCommand<WeatherInfo>(ExecuteAddToFavorites,
+                info => info != null);
         }
 
-        private async void Execute(WeatherInfo weatherInfo)
+        private void ExecuteAddToFavorites(WeatherInfo weatherInfo)
         {
             MessagingCenter.Send(this, MessageIds.AddCityToFavorites, weatherInfo);
         }

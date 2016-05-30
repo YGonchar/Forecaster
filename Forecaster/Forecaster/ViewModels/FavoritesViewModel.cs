@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Forecaster.Models;
@@ -8,10 +9,11 @@ using Xamarin.Forms;
 using XLabs;
 using XLabs.Forms.Mvvm;
 using XLabs.Ioc;
+using IViewModel = Forecaster.Contracts.IViewModel;
 
 namespace Forecaster.ViewModels
 {
-    internal class FavoritesViewModel : ViewModel
+    internal class FavoritesViewModel : ViewModel, IViewModel
     {
         public FavoritesViewModel()
         {
@@ -19,43 +21,40 @@ namespace Forecaster.ViewModels
         }
 
         public ObservableCollection<WeatherInfo> Favorites { get; set; }
-
-        public RelayCommand EditCommand { get; set; }
+        public RelayCommand<WeatherInfo> RemoveFromFavorites { get; set; }
 
         private async void InitState()
         {
             MessagingCenter.Subscribe<HomeViewModel, WeatherInfo>(this, MessageIds.AddCityToFavorites, AddFavoritesCity);
-
+            RemoveFromFavorites = new RelayCommand<WeatherInfo>(ExecuteRemoveFromFavorites, info => Favorites.Any());
             await LoadFavoritesAsync();
+        }
+
+        private void ExecuteRemoveFromFavorites(WeatherInfo weatherInfo)
+        {
+            Favorites.Remove(weatherInfo);
+            Application.Current.Properties.Remove(new KeyValuePair<string, object>(weatherInfo.City.Name,
+                weatherInfo.City.Id));
         }
 
         private void AddFavoritesCity(HomeViewModel sender, WeatherInfo info)
         {
-            PersistFavoriteCity(info.City);
+            SaveFavoriteCity(info.City);
             Favorites.Add(info);
-            EditCommand.RaiseCanExecuteChanged();
         }
 
-        private void PersistFavoriteCity(City city)
+        private void SaveFavoriteCity(City city)
         {
             Application.Current.Properties[city.Name] = city.Id;
         }
 
         private async Task LoadFavoritesAsync()
         {
-#if !DEBUG
             var info = await Task.WhenAll(
-                Enumerable.Range(0, 3)
-                .Select(i => Resolver.Resolve<RestClient>().GetWeatherByCityAsync(default(City))));
+                Application.Current.Properties.Values
+                    .Select(i => Resolver.Resolve<RestClient>().GetWeatherByCityIdAsync((int) i)));
 
             Device.BeginInvokeOnMainThread(() => Favorites = new ObservableCollection<WeatherInfo>(info));
-#else
-            var info = await Task.WhenAll(
-                Application.Current.Properties.Keys
-                    .Select(i => Resolver.Resolve<RestClient>().GetWeatherByCityIdAsync(int.Parse(i.ToString()))));
-
-            Device.BeginInvokeOnMainThread(() => Favorites = new ObservableCollection<WeatherInfo>(info));
-#endif
         }
     }
 }

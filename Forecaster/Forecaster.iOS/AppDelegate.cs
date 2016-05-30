@@ -2,6 +2,7 @@
 using UIKit;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.iOS;
+using XLabs.Platform.Services;
 
 namespace Forecaster.iOS
 {
@@ -20,6 +21,7 @@ namespace Forecaster.iOS
         //
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
+            DependencyService.Register<INetwork, Network>();
             Forms.Init();
             LoadApplication(new App());
 

@@ -2,6 +2,7 @@
 using Forecaster.Views;
 using Xamarin.Forms;
 using XLabs.Ioc;
+using XLabs.Platform.Services;
 
 namespace Forecaster
 {
@@ -16,6 +17,17 @@ namespace Forecaster
         {
             ConfigureIoC();
             MainPage = new NavigationPage(new MainPage());
+            CheckConnection();
+        }
+
+        private void CheckConnection()
+        {
+            INetwork network = DependencyService.Get<INetwork>();
+            if (network.InternetConnectionStatus() == NetworkStatus.NotReachable)
+            {
+                MainPage.DisplayAlert("Connection problems",
+                    "No internet connection. It may cause to crash. Please check connection and restart the app.", "Ok");
+            }
         }
 
         private void ConfigureIoC()
@@ -23,14 +35,7 @@ namespace Forecaster
             IDependencyContainer container = new SimpleContainer();
             Resolver.SetResolver(container.GetResolver());
 
-            container.Register<RestClient>(resolver =>
-            {
-#if !DEBUG
-                return new RestClientMock();
-#else
-                return DependencyService.Get<RestClient>();
-#endif
-            });
+            container.Register(resolver => DependencyService.Get<RestClient>());
         }
     }
 }

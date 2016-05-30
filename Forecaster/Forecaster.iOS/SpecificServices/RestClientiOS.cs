@@ -25,12 +25,12 @@ namespace Forecaster.iOS.SpecificServices
 
         public override async Task<IEnumerable<City>> FindCitiesAsync(string cityName)
         {
-            var tcs = new TaskCompletionSource<IEnumerable<City>>(TaskCreationOptions.AttachedToParent);
+            var tcs = new TaskCompletionSource<IEnumerable<City>>();
 
             RestRequest request = new RestRequest(string.Format(RestApiConstants.FindManyCities, cityName, AppId));
             request.AddQueryParameter(RestApiConstants.UnitsParam, UnitsType);
             request.RequestFormat = DataFormat.Json;
-            var response = await _client.ExecuteTaskAsync(request);
+            var response = _client.Execute(request);
 
             try
             {
@@ -48,9 +48,14 @@ namespace Forecaster.iOS.SpecificServices
 
         public override async Task<WeatherInfo> GetWeatherByCityAsync(City city)
         {
-            var tcs = new TaskCompletionSource<WeatherInfo>(TaskCreationOptions.AttachedToParent);
+            var tcs = new TaskCompletionSource<WeatherInfo>();
 
-            RestRequest request = new RestRequest(string.Format(RestApiConstants.GetWeatherInfoForCity, city.Id, AppId));
+            string resouceUri = city.Id != 0
+                ? string.Format(RestApiConstants.GetWeatherInfoForCity, city.Id, AppId)
+                : string.Format(RestApiConstants.GetWeatherInfoForCity, city.Name, AppId);
+
+
+            RestRequest request = new RestRequest(resouceUri);
             request.AddQueryParameter(RestApiConstants.UnitsParam, UnitsType);
             request.RequestFormat = DataFormat.Json;
             var response = _client.Execute(request);
@@ -59,8 +64,19 @@ namespace Forecaster.iOS.SpecificServices
             {
                 if (response.StatusCode == HttpStatusCode.NotFound)
                     throw new Exception("Incorrect city ID");
-                var info = ExtractWeatherInfo(response.Content);
-                tcs.SetResult(info);
+                if (response.Content == string.Empty)
+                {
+                    tcs.SetResult(null);
+                }
+                else
+                {
+                    var info = ExtractWeatherInfo(response.Content);
+                    tcs.SetResult(info);
+                }
+            }
+            catch (WebException exc) when (exc.Status == WebExceptionStatus.NameResolutionFailure)
+            {
+                throw new WebException("No internet connection", exc);
             }
             catch (Exception exc)
             {
@@ -76,7 +92,7 @@ namespace Forecaster.iOS.SpecificServices
 
         public override async Task<byte[]> LoadIconAsync(string iconId)
         {
-            var tcs = new TaskCompletionSource<byte[]>(TaskCreationOptions.AttachedToParent);
+            var tcs = new TaskCompletionSource<byte[]>();
             WebClient cl = new WebClient();
             string adress = string.Format(RestApiConstants.LoadWeatherIcon, iconId);
             try
